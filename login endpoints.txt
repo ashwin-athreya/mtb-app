@@ -1,0 +1,47 @@
+@CrossOrigin(origins = "http://localhost:4200")
+@RestController
+public class LoginController {
+
+	Logger logger = LoggerFactory.getLogger(LoginController.class);
+
+	@Autowired
+	LoginService logServ;
+	
+
+	@PostMapping("/login/{username}/{password}")
+	public LoginDTO loginUser(@PathVariable @Pattern(regexp = "[a-zA-Z0-9]+", message = "Invalid username format")String username, 
+			@PathVariable @NotBlank(message = "Password is required")String password) {
+		Login login=new Login();
+		LoginDTO loginDTO=new LoginDTO();
+		try {
+			login=logServ.loginWithData(username, password);
+			loginDTO=EntityDtoMapper.convertToDTO(login, LoginDTO.class);
+		} catch (Exception e) {
+			logger.error("------------------LoginFailed---------------");
+			return loginDTO;
+
+		}
+		logger.info("-----------------Login Successful----------------");
+		return loginDTO;
+	}
+
+	
+	@PostMapping("/logout")
+	public HttpStatus logOut() throws Exception {
+		if (this.loginStatus()) {
+			logServ.logoutPresentUser();
+			return HttpStatus.ACCEPTED;
+		} else {
+			throw new Exception("User Not yet Lo gged In");
+		}
+	}
+
+	
+	public boolean loginStatus() {
+		return logServ.loginStatus();
+	}
+
+	
+	public String getRole() {
+		return logServ.getRole();
+	}

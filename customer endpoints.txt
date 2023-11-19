@@ -1,0 +1,50 @@
+@CrossOrigin(origins = "http://localhost:4200")
+@RestController
+@RequestMapping("/customer")
+public class CustomerController {
+
+	Logger logger = LoggerFactory.getLogger(CustomerController.class);
+
+	@Autowired
+	private CustomerService customerService;
+	@Autowired
+	LoginController loginController;
+
+	
+	@PostMapping("/add")
+	public ResponseEntity<String> addCustomer(@Valid @RequestBody CustomerDTO customerDTO)
+			throws CustomerNotFoundException, AccessForbiddenException {
+	
+		ResponseEntity<String> response = null;
+		Customer customer=EntityDtoMapper.convertToEntity(customerDTO, Customer.class);
+		if (customer == null) {
+			logger.error("-------------Please Enter Customer Values--------");
+			response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} else {
+			customer = customerService.addCustomer(customer);
+			response = new ResponseEntity<>("Customer is Added", HttpStatus.CREATED);
+			logger.info("----------------Customer Created------------------");
+		}
+		return response;
+	}
+
+	
+	@PutMapping("/update")
+	public ResponseEntity<CustomerDTO> updateCustomer(@RequestBody CustomerDTO customerDTO)
+			throws CustomerNotFoundException, AccessForbiddenException {
+		
+		ResponseEntity<CustomerDTO> response = null;
+		Customer customer=EntityDtoMapper.convertToEntity(customerDTO, Customer.class);
+		if (customer == null) {
+			logger.error("Enter Customer Details");
+			response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} else {
+			customer = customerService.updateCustomer(customer);
+			CustomerDTO resultDTO=EntityDtoMapper.convertToDTO(customer, CustomerDTO.class);
+			response = new ResponseEntity<>(resultDTO, HttpStatus.OK);
+			logger.info("--------------Customer Updated Successfully-----------------");
+		}
+		return response;
+	}
+
+	
