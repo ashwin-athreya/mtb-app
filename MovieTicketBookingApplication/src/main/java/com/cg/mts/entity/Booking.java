@@ -46,6 +46,7 @@ public class Booking {
 	private Ticket ticket;
 
 	public Booking() {
+
 	}
 
 	public Booking(Show show, LocalDate bookingDate, String transactionMode, String transactionStatus, double totalCost,
