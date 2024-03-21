@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class Booking {
 	
@@ -46,9 +45,11 @@ public class Booking {
 	@OneToOne(mappedBy = "booking")
 	private Ticket ticket;
 
+	public Booking() {
+	}
 
 	public Booking(Show show, LocalDate bookingDate, String transactionMode, String transactionStatus, double totalCost,
-			Customer customer, Ticket ticket) {
+				   Customer customer, Ticket ticket) {
 		super();
 		this.show = show;
 		this.bookingDate = bookingDate;
